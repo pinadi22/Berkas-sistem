@@ -1,0 +1,44 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cek proyek.zip
+        id: cek
+        run: |
+          if [ -f proyek.zip ]; then
+            unzip -q -o proyek.zip -d proyek
+            echo "ada=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ada=false" >> "$GITHUB_OUTPUT"
+            echo "proyek.zip belum diunggah, build dilewati."
+          fi
+
+      - uses: actions/setup-java@v4
+        if: steps.cek.outputs.ada == 'true'
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.cek.outputs.ada == 'true'
+        with:
+          gradle-version: "8.7"
+
+      - name: Build debug APK
+        if: steps.cek.outputs.ada == 'true'
+        working-directory: proyek
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        if: steps.cek.outputs.ada == 'true'
+        with:
+          name: BerkasSistem-apk
+          path: proyek/app/build/outputs/apk/debug/app-debug.apk
