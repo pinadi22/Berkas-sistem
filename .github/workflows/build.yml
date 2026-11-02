@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,3 +45,12 @@ jobs:
         with:
           name: BerkasSistem-apk
           path: proyek/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Terbitkan di Releases
+        if: steps.cek.outputs.ada == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.1-build${{ github.run_number }}
+          name: Berkas Sistem v1.1 (build ${{ github.run_number }})
+          body: Pasang app-debug.apk. Panduan lengkap ada di README repositori.
+          files: proyek/app/build/outputs/apk/debug/app-debug.apk
