@@ -43,14 +43,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: steps.cek.outputs.ada == 'true'
         with:
-          name: BerkasSistem-apk
+          name: RuangLega-apk
           path: proyek/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Terbitkan di Releases
         if: steps.cek.outputs.ada == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.1-build${{ github.run_number }}
-          name: Berkas Sistem v1.1 (build ${{ github.run_number }})
+          tag_name: v1.2-build${{ github.run_number }}
+          name: Ruang Lega v1.2 (build ${{ github.run_number }})
           body: Pasang app-debug.apk. Panduan lengkap ada di README repositori.
           files: proyek/app/build/outputs/apk/debug/app-debug.apk
